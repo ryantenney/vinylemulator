@@ -34,6 +34,29 @@ def touched(tag):
 
             #determine which music service read from NFC
             if receivedtext_lower.startswith('spotify'):
+                if receivedtext_lower.startswith('spotify:track:'):
+                    received_track_id = receivedtext[14:]
+                    try:
+                        state = requests.get(usersettings.sonoshttpaddress + "/" + sonosroom_local + "/state").json()
+                        print("Got current player state")
+                        if state['playbackState'] == 'PLAYING':
+                            current_track = state['currentTrack']
+                            current_track_uri = current_track['trackUri']
+                            print("Player is currently PLAYING")
+                            print("\tCurrent track: " + current_track_uri)
+                            if current_track_uri.startswith('x-sonos-spotify:spotify%3atrack%3a') and received_track_id in current_track_uri:
+                                print("Player seems to be playing the requested track")
+                                duration = current_track['duration']
+                                elapsed = state['elapsedTime']
+                                print("\tDuration = " + str(duration))
+                                print("\tElapsed = " + str(elapsed))
+                                if elapsed < (duration * 0.8):
+                                    print("Requested track is already playing and is less than 80% complete")
+                                    return True
+                    except Exception as e:
+                        print("Failed to get player state")
+                        print(e)
+
                 servicetype = "spotify"
                 sonosinstruction = "spotify/now/" + receivedtext
 
