@@ -118,8 +118,6 @@ print("")
 print("Loading and checking readnfc")
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 print("")
-print("SCRIPT")
-print("You are running version " + appsettings.appversion + "...")
 
 print("")
 print("NFC READER")
